@@ -1,8 +1,8 @@
 const player1 = {
-    name: 'Liu Kang',
+    name: 'SCORPION',
     hp: 100,
     img: '',
-    weapon: ['Dragon Fire'],
+    weapon: ['Chain'],
     attack: function () {
         console.log(name + ' Fight...')
     }
@@ -18,7 +18,7 @@ const player2 = {
     }
 }
 
-function createPlayer() {
+function createPlayer(name='SCORPION') {
     const $player1 = document.createElement('div');
     $player1.classList.add('player1');
 
@@ -32,11 +32,12 @@ function createPlayer() {
     $player1.appendChild($character);
 
     const $life = document.createElement('div');
-    $life.classList.add('life')
+    $life.classList.add('life');
+    $life.style.width = '100%';
 
     const $name = document.createElement('div');
     $name.classList.add('name');
-    $name.innerText = 'Liu Kang';
+    $name.innerText = name;
 
     $progressbar.appendChild($life);
     $progressbar.appendChild($name);
