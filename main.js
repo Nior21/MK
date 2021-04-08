@@ -1,32 +1,31 @@
 const player1 = {
     name: 'SCORPION',
-    hp: 100,
+    hp: 50,
     img: '',
-    weapon: ['Chain'],
+    weapon: ['weapon_1'],
     attack: function () {
         console.log(name + ' Fight...')
     }
 }
 
 const player2 = {
-    name: 'Raiden',
-    hp: 100,
+    name: 'SUB-ZERO',
+    hp: 80,
     img: '',
-    weapon: ['Thunder'],
+    weapon: ['weapon_2'],
     attack: function () {
         console.log(name + ' Fight...')
     }
 }
 
-const $arenas = document.createElement('div');
-$arenas.classList.add('arenas');
 
-//document.appendChild($arenas);
+function createPlayer(player='player1', character) {
+    const $arenas = document.getElementById('arenas');
 
-
-function createPlayer(player='player1', name='SCORPION', hp=100) {
     const $player = document.createElement('div');
     $player.classList.add(player);
+
+    $arenas.appendChild($player);
 
     const $progressbar = document.createElement('div');
     $progressbar.classList.add('progressbar');
@@ -40,10 +39,11 @@ function createPlayer(player='player1', name='SCORPION', hp=100) {
     const $life = document.createElement('div');
     $life.classList.add('life');
     $life.style.width = '100%';
+    $life.innerText = character.hp;
 
     const $name = document.createElement('div');
     $name.classList.add('name');
-    $name.innerText = name;
+    $name.innerText = character.name;
 
     $progressbar.appendChild($life);
     $progressbar.appendChild($name);
@@ -54,9 +54,8 @@ function createPlayer(player='player1', name='SCORPION', hp=100) {
     $character.appendChild($img);
 
     //console.log($player);
-    $arenas.appendChild($player);
 
 }
 
-createPlayer('player1', 'SCORPION', 50)
-createPlayer('player2', 'SUB-ZERO',80)
+createPlayer('player1', player1);
+createPlayer('player2', player2);
