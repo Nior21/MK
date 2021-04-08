@@ -38,7 +38,7 @@ function createPlayer(player='player1', character) {
 
     const $life = document.createElement('div');
     $life.classList.add('life');
-    $life.style.width = '100%';
+    $life.style.width = `${character.hp}%`;
 
     const $name = document.createElement('div');
     $name.classList.add('name');
