@@ -18,9 +18,15 @@ const player2 = {
     }
 }
 
-function createPlayer(name='SCORPION') {
-    const $player1 = document.createElement('div');
-    $player1.classList.add('player1');
+const $arenas = document.createElement('div');
+$arenas.classList.add('arenas');
+
+//document.appendChild($arenas);
+
+
+function createPlayer(player='player1', name='SCORPION', hp=100) {
+    const $player = document.createElement('div');
+    $player.classList.add(player);
 
     const $progressbar = document.createElement('div');
     $progressbar.classList.add('progressbar');
@@ -28,8 +34,8 @@ function createPlayer(name='SCORPION') {
     const $character = document.createElement('div');
     $character.classList.add('character');
 
-    $player1.appendChild($progressbar);
-    $player1.appendChild($character);
+    $player.appendChild($progressbar);
+    $player.appendChild($character);
 
     const $life = document.createElement('div');
     $life.classList.add('life');
@@ -47,5 +53,10 @@ function createPlayer(name='SCORPION') {
 
     $character.appendChild($img);
 
-    console.log($player1)
+    //console.log($player);
+    $arenas.appendChild($player);
+
 }
+
+createPlayer('player1', 'SCORPION', 50)
+createPlayer('player2', 'SUB-ZERO',80)
