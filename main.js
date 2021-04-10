@@ -1,79 +1,57 @@
-console.log ( `#### TYPES` );
+const player1 = {
+    name: 'SCORPION',
+    hp: 50,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
+    weapon: ['weapon_1'],
+    attack: function () {
+        console.log(name + ' Fight...')
+    }
+}
 
-const string = 'Sonya';
-console.log ( `#### string :`, string, `(${ typeof string })` );
+const player2 = {
+    name: 'SUB-ZERO',
+    hp: 80,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
+    weapon: ['weapon_2'],
+    attack: function () {
+        console.log(name + ' Fight...')
+    }
+}
 
-const count = 4;
-console.log ( `#### count :`, count, `(${ typeof count })` );
 
-const infinity = 5/0;
-console.log ( `#### infinity :`, infinity, `(${ typeof infinity })` );
+function createPlayer(player='player1', character) {
+    const $arenas = document.getElementById('arenas');
 
-const NotANumber = 10 * 'as';
-console.log ( `#### NotANumber :`, NotANumber, `(${ typeof NotANumber })` );
+    const $player = document.createElement('div');
+    $player.classList.add(player);
 
-const symbol = Symbol();
-console.log ( `#### symbol :`, symbol, `(${ typeof symbol })` );
+    $arenas.appendChild($player);
 
-const bigint =  BigInt(3);
-console.log ( `#### bigint :`, bigint, `(${ typeof bigint })` );
+    const $progressbar = document.createElement('div');
+    $progressbar.classList.add('progressbar');
 
-let someVariable;
-console.log ( `#### someVariable :`, someVariable, `(${ typeof someVariable })` );
+    const $character = document.createElement('div');
+    $character.classList.add('character');
 
-let someNull = null;
-console.log ( `#### someNull :`, someNull, `(${ typeof someNull })` );
+    $player.appendChild($progressbar);
+    $player.appendChild($character);
 
-const obj = {};
-console.log ( `#### obj :`, obj, `(${ typeof obj })` );
+    const $life = document.createElement('div');
+    $life.classList.add('life');
+    $life.style.width = `${character.hp}%`;
 
-const arr = [];
-console.log ( `#### arr :`, arr, `(${ typeof arr })` );
+    const $name = document.createElement('div');
+    $name.classList.add('name');
+    $name.innerText = character.name;
 
-const fn = function () {};
-console.log ( `#### fn :`, fn, `(${ typeof fn })` );
+    $progressbar.appendChild($life);
+    $progressbar.appendChild($name);
 
-// String & Concatenate
+    const $img = document.createElement('img');
+    $img.src = character.img;
 
-console.log ( '#### STRING' );
+    $character.appendChild($img);
+}
 
-console.log ( `#### String(10) :`, String(10), `(${ typeof String(10) })` );
-
-console.log ( `#### 'Hello' + 'World' :`, 'Hello' + 'World' );
-
-const hello = 'Hello';
-const world = 'World';
-const concat = hello + world;
-
-console.log ( `#### concat :`, concat );
-console.log ( `#### concat + 5 :`, concat + 5 );
-console.log ( `#### concat + true :`, concat + true );
-console.log ( `#### concat + undefined :`, concat + undefined );
-console.log ( `#### concat + function() {}:`, concat + function() {} );
-console.log ( `#### concat + [1,2,3]:`, concat + [1,2,3] );
-
-console.log ( `#### concat + {a: 1}:`, concat + {a: 1} );
-
-// Number
-
-console.log ( '#### NUMBER' );
-
-console.log ( `#### Number('5') :`, Number('5'), `(${ typeof Number('5') })` );
-console.log ( `#### Number('asd') :`, Number('asd'), `(${ typeof Number('asd') })` );
-
-console.log ( `#### +'5' :`, +'5', `(${ typeof +'5' })` );
-
-console.log ( `#### +true :`, +true, `(${ typeof +true })` );
-console.log ( `#### +false :`, +false, `(${ typeof +false })` );
-console.log ( `#### +null :`, +null, `(${ typeof +null })` );
-
-// Boolean
-
-console.log ( '#### BOOLEAN' );
-
-console.log ( `#### Boolean('') :`, Boolean(''), `(${ typeof Boolean('') })` );
-console.log ( `#### Boolean(' ') :`, Boolean(' '), `(${ typeof Boolean(' ') })` );
-console.log ( `#### Boolean(0) :`, Boolean(0), `(${ typeof Boolean(0) })` );
-console.log ( `#### Boolean(null) :`, Boolean(null), `(${ typeof Boolean(null) })` );
-
-console.log ( `#### !!'asd' :`, !!'asd', `(${ typeof !!'asd' })` );
+createPlayer('player1', player1);
+createPlayer('player2', player2);
