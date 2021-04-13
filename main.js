@@ -56,14 +56,14 @@ function createPlayer(character) {
 }
 
 
-function random(maxNum) {
+function getRandom(maxNum) {
     return Math.ceil(Math.random() * maxNum);
 }
 
 
 function changeHP(character) {
     const $playerLife = document.querySelector ( '.player' + character.player + ' .life' );
-    character.hp -= random(20) // случайное число от 1 до 20
+    character.hp -= getRandom(20) // случайное число от 1 до 20
 
     if (character.hp < 0) {
         character.hp = 0;
