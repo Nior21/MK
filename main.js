@@ -56,9 +56,14 @@ function createPlayer(character) {
 }
 
 
+function random(maxNum) {
+    return Math.ceil(Math.random() * maxNum);
+}
+
+
 function changeHP(character) {
     const $playerLife = document.querySelector ( '.player' + character.player + ' .life' );
-    character.hp -= Math.ceil(Math.random() * 20); // случайное число от 1 до 20
+    character.hp -= random(20) // случайное число от 1 до 20
 
     if (character.hp < 0) {
         character.hp = 0;
@@ -85,6 +90,7 @@ function playerLose(name) {
 function playerWin(name) {
     const $winTitle = createElement ( 'div', 'winTitle' );
     $winTitle.innerText = name + ' wins!';
+    console.log ( `#### player ${name + ' wins!'}` );
 
     $randomButton.disabled = true // отключаем кнопку
 
