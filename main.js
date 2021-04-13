@@ -67,9 +67,9 @@ function changeHP(character) {
 
     if (character.hp < 0) {
         character.hp = 0;
-        if (character.player == 2) {
+        if (character.player === 2) {
             playerWin(player1.name);
-        } else if (character.player == 1) {
+        } else if (character.player === 1) {
             playerWin(player2.name);
         }
     }
@@ -94,7 +94,7 @@ function playerWin(name) {
 
     $randomButton.disabled = true // отключаем кнопку
 
-    return $arenas.appendChild ( $winTitle )
+    $arenas.appendChild ( $winTitle )
 }
 
 
