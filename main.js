@@ -73,19 +73,15 @@ function changeHP(character) {
 }
 
 
-function playerLose(name) {
-    const $loseTitle = createElement ( 'div', 'loseTitle' );
-    $loseTitle.innerText = name + ' lose!';
-
-    return $loseTitle;
-}
-
-
 function playerWins(name) {
     const $winTitle = createElement ( 'div', 'winTitle' );
-    $winTitle.innerText = name + ' wins!';
+    if (name) {
+        $winTitle.innerText = name + ' Wins';
+    } else {
+        $winTitle.innerText = 'Draw';
+    }
 
-    return  $winTitle;
+    return $winTitle;
 }
 
 
@@ -103,10 +99,9 @@ $randomButton.addEventListener ( 'click', function () {
     } else if (player2.hp === 0 && player2.hp < player1.hp) {
         $arenas.appendChild(playerWins(player1.name));
     } else if (player1.hp === 0 && player2.hp === 0) {
-
+        $arenas.appendChild(playerWins());
     }
-}
-    )
+})
 
 
 $arenas.appendChild ( createPlayer ( player1 ) );
