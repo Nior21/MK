@@ -1,33 +1,6 @@
 const $arenas = document.querySelector ( '.arenas' );
 const $randomButton = document.querySelector ( '.button' );
 
-const player1 = {
-    player: 1,
-    name: 'SCORPION',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
-    weapon: ['weapon_1'],
-    attack: function () {
-        console.log ( name + ' Fight...' )
-    },
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP
-}
-const player2 = {
-    player: 2,
-    name: 'SUB-ZERO',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
-    weapon: ['weapon_2'],
-    attack: function () {
-        console.log ( name + ' Fight...' )
-    },
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP
-}
-
 
 function createElement(tag, className) {
     const $tag = document.createElement ( tag );
@@ -66,6 +39,41 @@ function getRandom(maxNum) {
     return Math.ceil(Math.random() * maxNum);
 }
 
+
+function startAttack(hp) {
+    return this.name + ' Fight...' + hp;
+}
+
+
+const player1 = {
+    player: 1,
+    name: 'SCORPION',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
+    weapon: ['weapon_1'],
+    attack: startAttack,
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP
+}
+const player2 = {
+    player: 2,
+    name: 'SUB-ZERO',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
+    weapon: ['weapon_2'],
+    attack: startAttack,
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP
+}
+
+$arenas.appendChild ( createPlayer ( player1 ) );
+$arenas.appendChild ( createPlayer ( player2 ) );
+
+console.log ( `#### player1.attack():`, player1.attack() );
+console.log ( `#### player2.attack():`, player2.attack() );
+console.log ( `#### player1.attack.call(player2, 10):`, player1.attack.call(player2, 10) );
 
 function changeHP(deltaHP) {
 
@@ -120,5 +128,3 @@ $randomButton.addEventListener ( 'click', function () {
 })
 
 
-$arenas.appendChild ( createPlayer ( player1 ) );
-$arenas.appendChild ( createPlayer ( player2 ) );
