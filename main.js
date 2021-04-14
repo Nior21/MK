@@ -1,28 +1,6 @@
 const $arenas = document.querySelector ( '.arenas' );
 const $randomButton = document.querySelector ( '.button' );
 
-const player1 = {
-    player: 1,
-    name: 'SCORPION',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
-    weapon: ['weapon_1'],
-    attack: function () {
-        console.log ( name + ' Fight...' )
-    }
-}
-const player2 = {
-    player: 2,
-    name: 'SUB-ZERO',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
-    weapon: ['weapon_2'],
-    attack: function () {
-        console.log ( name + ' Fight...' )
-    }
-}
-
-
 function createElement(tag, className) {
     const $tag = document.createElement ( tag );
 
@@ -56,20 +34,61 @@ function createPlayer(character) {
 }
 
 
-function random(maxNum) {
+function getRandom(maxNum) {
     return Math.ceil(Math.random() * maxNum);
 }
 
 
-function changeHP(character) {
-    const $playerLife = document.querySelector ( '.player' + character.player + ' .life' );
-    character.hp -= random(20) // случайное число от 1 до 20
+function startAttack() {
+    return this.name + ' Fight...';
+}
 
-    if (character.hp < 0) {
-        character.hp = 0;
+
+const player1 = {
+    player: 1,
+    name: 'SCORPION',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
+    weapon: ['weapon_1'],
+    attack: startAttack,
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP,
+}
+const player2 = {
+    player: 2,
+    name: 'SUB-ZERO',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
+    weapon: ['weapon_2'],
+    attack: startAttack,
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP,
+}
+
+$arenas.appendChild ( createPlayer ( player1 ) );
+$arenas.appendChild ( createPlayer ( player2 ) );
+
+function changeHP(deltaHP) {
+
+    this.hp -= deltaHP;
+
+    if (this.hp < 0) {
+        this.hp = 0;
     }
 
-    $playerLife.style.width = character.hp + '%'
+    this.renderHP();
+}
+
+
+function elHP() {
+    return document.querySelector ( '.player' + this.player + ' .life' );
+}
+
+
+function renderHP() {
+    this.elHP().style.width = this.hp + '%';
 }
 
 
@@ -86,8 +105,8 @@ function playerWins(name) {
 
 
 $randomButton.addEventListener ( 'click', function () {
-    changeHP ( player1 );
-    changeHP ( player2 );
+    player1.changeHP(getRandom(20));
+    player2.changeHP(getRandom(20));
 
     if (player1.hp === 0 || player2.hp === 0) {
         $randomButton.disabled = true;
@@ -101,8 +120,7 @@ $randomButton.addEventListener ( 'click', function () {
     } else if (player1.hp === 0 && player2.hp === 0) {
         $arenas.appendChild(playerWins());
     }
+
 })
 
 
-$arenas.appendChild ( createPlayer ( player1 ) );
-$arenas.appendChild ( createPlayer ( player2 ) );
