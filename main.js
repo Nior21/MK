@@ -34,6 +34,20 @@ function createPlayer(character) {
 }
 
 
+function createReloadButton () {
+    const $reloadDiv = createElement('div', 'reloadWrap');
+    $arenas.appendChild($reloadDiv);
+
+    const $reloadWrap = createElement ( 'button', 'button' );
+    $reloadWrap.innerText = 'Restart';
+
+    $reloadDiv.appendChild ( $reloadWrap );
+
+    $reloadWrap.addEventListener ( 'click', function () {
+        window.location.reload()
+    })
+}
+
 function getRandom(maxNum) {
     return Math.ceil(Math.random() * maxNum);
 }
@@ -81,11 +95,9 @@ function changeHP(deltaHP) {
     this.renderHP();
 }
 
-
 function elHP() {
     return document.querySelector ( '.player' + this.player + ' .life' );
 }
-
 
 function renderHP() {
     this.elHP().style.width = this.hp + '%';
@@ -110,6 +122,7 @@ $randomButton.addEventListener ( 'click', function () {
 
     if (player1.hp === 0 || player2.hp === 0) {
         $randomButton.disabled = true;
+        createReloadButton();
     }
 
     if (player1.hp === 0 && player1.hp < player2.hp)
