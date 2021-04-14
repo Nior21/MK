@@ -1,7 +1,6 @@
 const $arenas = document.querySelector ( '.arenas' );
 const $randomButton = document.querySelector ( '.button' );
 
-
 function createElement(tag, className) {
     const $tag = document.createElement ( tag );
 
@@ -40,8 +39,8 @@ function getRandom(maxNum) {
 }
 
 
-function startAttack(hp) {
-    return this.name + ' Fight...' + hp;
+function startAttack() {
+    return this.name + ' Fight...';
 }
 
 
@@ -54,7 +53,7 @@ const player1 = {
     attack: startAttack,
     changeHP: changeHP,
     elHP: elHP,
-    renderHP: renderHP
+    renderHP: renderHP,
 }
 const player2 = {
     player: 2,
@@ -65,15 +64,11 @@ const player2 = {
     attack: startAttack,
     changeHP: changeHP,
     elHP: elHP,
-    renderHP: renderHP
+    renderHP: renderHP,
 }
 
 $arenas.appendChild ( createPlayer ( player1 ) );
 $arenas.appendChild ( createPlayer ( player2 ) );
-
-console.log ( `#### player1.attack():`, player1.attack() );
-console.log ( `#### player2.attack():`, player2.attack() );
-console.log ( `#### player1.attack.call(player2, 10):`, player1.attack.call(player2, 10) );
 
 function changeHP(deltaHP) {
 
@@ -93,7 +88,7 @@ function elHP() {
 
 
 function renderHP() {
-    this.elHP.style.width = this.hp + '%';
+    this.elHP().style.width = this.hp + '%';
 }
 
 
@@ -125,6 +120,7 @@ $randomButton.addEventListener ( 'click', function () {
     } else if (player1.hp === 0 && player2.hp === 0) {
         $arenas.appendChild(playerWins());
     }
+
 })
 
 
