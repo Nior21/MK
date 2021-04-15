@@ -7,12 +7,50 @@ const HIT = {
     foot: 20,
 }
 const ATTACK = ['head', 'body', 'foot'];
+const player1 = {
+    player: 1,
+    name: 'SCORPION',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
+    weapon: ['weapon_1'],
+    attack,
+    changeHP,
+    elHP,
+    renderHP,
+}
+const player2 = {
+    player: 2,
+    name: 'SUB-ZERO',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
+    weapon: ['weapon_2'],
+    attack,
+    changeHP,
+    elHP,
+    renderHP,
+}
 
-function createElement(tag, className) {
+
+function createElement(tag, className, parent, child) {
     const $tag = document.createElement ( tag );
 
     if (className) {
         $tag.classList.add ( className );
+    }
+
+    if (child) {
+        switch (Object.keys ( child )[0]) {
+            case 'styleWidth':
+                $tag.style.width = child.styleWidth;
+            case 'innerText':
+                $tag.innerText = child.innerText;
+            case 'src':
+                $tag.src = child.src;
+        }
+    }
+
+    if (parent) {
+        parent.appendChild ( $tag );
     }
 
     return $tag;
@@ -20,33 +58,28 @@ function createElement(tag, className) {
 
 function createPlayer(character) {
 
-    const $player = createElement ( 'div', 'player' + character.player );
-    const $progressbar = createElement ( 'div', 'progressbar' );
-    const $character = createElement ( 'div', 'character' );
-    const $life = createElement ( 'div', 'life' );
-    const $name = createElement ( 'div', 'name' );
-    const $img = createElement ( 'img' );
-
-    $player.appendChild ( $progressbar );
-    $player.appendChild ( $character );
-    $life.style.width = character.hp + `%`;
-    $name.innerText = character.name;
-    $progressbar.appendChild ( $life );
-    $progressbar.appendChild ( $name );
-    $img.src = character.img;
-    $character.appendChild ( $img );
+    const $player = createElement ( 'div', 'player' + character.player, $arenas );
+    const $progressbar = createElement ( 'div', 'progressbar', $player );
+    const $character = createElement ( 'div', 'character', $player );
+    createElement ( 'div', 'life', $progressbar, {
+        styleWidth: character.hp + `%`,
+    } );
+    createElement ( 'div', 'name', $progressbar, {
+        innerText: character.name,
+    } );
+    createElement ( 'img', 'img', $character, {
+        src: character.img,
+    } );
 
     return $player;
 }
 
 function createReloadButton() {
-    const $reloadDiv = createElement ( 'div', 'reloadWrap' );
-    $arenas.appendChild ( $reloadDiv );
+    const $reloadDiv = createElement ( 'div', 'reloadWrap', $arenas );
 
-    const $reloadWrap = createElement ( 'button', 'button' );
-    $reloadWrap.innerText = 'Restart';
-
-    $reloadDiv.appendChild ( $reloadWrap );
+    const $reloadWrap = createElement ( 'button', 'button', $reloadDiv, {
+        innerText: 'Restart',
+    } );
 
     $reloadWrap.addEventListener ( 'click', function () {
         window.location.reload ()
@@ -61,32 +94,8 @@ function attack() {
     return this.name + ' Fight...';
 }
 
-const player1 = {
-    player: 1,
-    name: 'SCORPION',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
-    weapon: ['weapon_1'],
-    attack,
-    changeHP,
-    elHP,
-    renderHP,
-}
-
-const player2 = {
-    player: 2,
-    name: 'SUB-ZERO',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
-    weapon: ['weapon_2'],
-    attack,
-    changeHP,
-    elHP,
-    renderHP,
-}
-
-$arenas.appendChild ( createPlayer ( player1 ) );
-$arenas.appendChild ( createPlayer ( player2 ) );
+createPlayer ( player1 );
+createPlayer ( player2 );
 
 function changeHP(deltaHP) {
 
@@ -108,17 +117,17 @@ function renderHP() {
 }
 
 function playerWins(name) {
-    const $winTitle = createElement ( 'div', 'winTitle' );
+    let child;
+
     if (name) {
-        $winTitle.innerText = name + ' Wins';
+        child = {innerText: name + ' Wins'};
     } else {
-        $winTitle.innerText = 'Draw';
+        child = {innerText: 'Draw'};
     }
 
     $randomButton.disabled = true;
     createReloadButton ();
-
-    return $winTitle;
+    createElement ( 'div', 'winTitle', $arenas, child);
 }
 
 function enemyAttack() {
@@ -155,10 +164,10 @@ $formFight.addEventListener ( 'submit', function (e) {
     player2.changeHP ( attack.value );
 
     if (player1.hp === 0 && player1.hp < player2.hp) {
-        $arenas.appendChild ( playerWins ( player2.name ) );
+        playerWins ( player2.name );
     } else if (player2.hp === 0 && player2.hp < player1.hp) {
-        $arenas.appendChild ( playerWins ( player1.name ) );
+        playerWins ( player1.name );
     } else if (player1.hp === 0 && player2.hp === 0) {
-        $arenas.appendChild ( playerWins () );
+        playerWins ();
     }
 } )
