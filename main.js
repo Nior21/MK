@@ -65,6 +65,7 @@ const player1 = {
     elHP,
     renderHP,
 }
+
 const player2 = {
     player: 2,
     name: 'SUB-ZERO',
@@ -107,17 +108,15 @@ function playerWins(name) {
         $winTitle.innerText = 'Draw';
     }
 
+    $randomButton.disabled = true;
+    createReloadButton();
+
     return $winTitle;
 }
 
 $randomButton.addEventListener ( 'click', function () {
     player1.changeHP(getRandom(20));
     player2.changeHP(getRandom(20));
-
-    if (player1.hp === 0 || player2.hp === 0) {
-        $randomButton.disabled = true;
-        createReloadButton();
-    }
 
     if (player1.hp === 0 && player1.hp < player2.hp)
     {
