@@ -11,7 +11,6 @@ function createElement(tag, className) {
     return $tag;
 }
 
-
 function createPlayer(character) {
 
     const $player = createElement ( 'div', 'player' + character.player );
@@ -33,7 +32,6 @@ function createPlayer(character) {
     return $player;
 }
 
-
 function createReloadButton () {
     const $reloadDiv = createElement('div', 'reloadWrap');
     $arenas.appendChild($reloadDiv);
@@ -52,11 +50,9 @@ function getRandom(maxNum) {
     return Math.ceil(Math.random() * maxNum);
 }
 
-
-function startAttack() {
+function attack() {
     return this.name + ' Fight...';
 }
-
 
 const player1 = {
     player: 1,
@@ -64,10 +60,10 @@ const player1 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
     weapon: ['weapon_1'],
-    attack: startAttack,
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP,
+    attack,
+    changeHP,
+    elHP,
+    renderHP,
 }
 const player2 = {
     player: 2,
@@ -75,10 +71,10 @@ const player2 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['weapon_2'],
-    attack: startAttack,
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP,
+    attack,
+    changeHP,
+    elHP,
+    renderHP,
 }
 
 $arenas.appendChild ( createPlayer ( player1 ) );
@@ -103,7 +99,6 @@ function renderHP() {
     this.elHP().style.width = this.hp + '%';
 }
 
-
 function playerWins(name) {
     const $winTitle = createElement ( 'div', 'winTitle' );
     if (name) {
@@ -114,7 +109,6 @@ function playerWins(name) {
 
     return $winTitle;
 }
-
 
 $randomButton.addEventListener ( 'click', function () {
     player1.changeHP(getRandom(20));
