@@ -30,7 +30,14 @@ const player2 = {
     renderHP,
 }
 
-
+/**
+ * Создаем элементы html
+ * @param tag
+ * @param className
+ * @param parent
+ * @param child
+ * @returns {*}
+ */
 function createElement(tag, className, parent, child) {
     const $tag = document.createElement ( tag );
 
@@ -42,10 +49,13 @@ function createElement(tag, className, parent, child) {
         switch (Object.keys ( child )[0]) {
             case 'styleWidth':
                 $tag.style.width = child.styleWidth;
+                break;
             case 'innerText':
                 $tag.innerText = child.innerText;
+                break;
             case 'src':
                 $tag.src = child.src;
+                break;
         }
     }
 
@@ -56,6 +66,11 @@ function createElement(tag, className, parent, child) {
     return $tag;
 }
 
+/**
+ * Создаем html-код игроков
+ * @param character
+ * @returns {*}
+ */
 function createPlayer(character) {
 
     const $player = createElement ( 'div', 'player' + character.player, $arenas );
@@ -74,6 +89,9 @@ function createPlayer(character) {
     return $player;
 }
 
+/**
+ * Отрисовываем кнопку для перезапуска игры
+ */
 function createReloadButton() {
     const $reloadDiv = createElement ( 'div', 'reloadWrap', $arenas );
 
@@ -86,10 +104,19 @@ function createReloadButton() {
     } )
 }
 
+/**
+ * Создаем случайные числа
+ * @param maxNum
+ * @returns {number}
+ */
 function getRandom(maxNum) {
     return Math.ceil ( Math.random () * maxNum );
 }
 
+/**
+ * Метод персонажей возвращающий текст
+ * @returns {string}
+ */
 function attack() {
     return this.name + ' Fight...';
 }
@@ -97,6 +124,10 @@ function attack() {
 createPlayer ( player1 );
 createPlayer ( player2 );
 
+/**
+ * Пересчитываем кол-во жизней
+ * @param deltaHP
+ */
 function changeHP(deltaHP) {
 
     this.hp -= deltaHP;
@@ -104,18 +135,39 @@ function changeHP(deltaHP) {
     if (this.hp < 0) {
         this.hp = 0;
     }
-
-    this.renderHP ();
 }
 
+/**
+ * Находим в html полосы HP
+ **/
 function elHP() {
     return document.querySelector ( '.player' + this.player + ' .life' );
 }
 
+/**
+ * Перерисовываем шкалу жизни
+ */
 function renderHP() {
     this.elHP ().style.width = this.hp + '%';
 }
 
+
+/**
+ * Определение победителей или ничьей
+ * **/
+function showResult() {
+    if (player1.hp === 0 && player1.hp < player2.hp) {
+        playerWins ( player2.name );
+    } else if (player2.hp === 0 && player2.hp < player1.hp) {
+        playerWins ( player1.name );
+    } else if (player1.hp === 0 && player2.hp === 0) {
+        playerWins ();
+    }
+}
+
+/**
+ * Отображение результатов
+ * **/
 function playerWins(name) {
     let child;
 
@@ -125,11 +177,14 @@ function playerWins(name) {
         child = {innerText: 'Draw'};
     }
 
-    $randomButton.disabled = true;
     createReloadButton ();
     createElement ( 'div', 'winTitle', $arenas, child);
+    $randomButton.disabled = true;
 }
 
+/**
+ * Ответные удары противника
+ * **/
 function enemyAttack() {
     const hit = ATTACK[getRandom ( 3 ) - 1];
     const defence = ATTACK[getRandom ( 3 ) - 1]
@@ -142,10 +197,11 @@ function enemyAttack() {
     }
 }
 
-$formFight.addEventListener ( 'submit', function (e) {
-    e.preventDefault ();
-    const enemy = enemyAttack ();
-
+/**
+ * Атакуем противника
+ * @returns {{}}
+ */
+function playerAttack() {
     const attack = {};
 
     for (let item of $formFight) {
@@ -160,14 +216,25 @@ $formFight.addEventListener ( 'submit', function (e) {
         item.checked = false;
     }
 
-    player1.changeHP ( enemy.value );
-    player2.changeHP ( attack.value );
+    return attack;
+}
 
-    if (player1.hp === 0 && player1.hp < player2.hp) {
-        playerWins ( player2.name );
-    } else if (player2.hp === 0 && player2.hp < player1.hp) {
-        playerWins ( player1.name );
-    } else if (player1.hp === 0 && player2.hp === 0) {
-        playerWins ();
+/**
+ * Добавляем слушатель для кнопки Fight
+ */
+$formFight.addEventListener ( 'submit', function (e) {
+    e.preventDefault ();
+    const enemy = enemyAttack ();
+    const player = playerAttack();
+
+    if (player.defence !== enemy.hit) {
+        player1.changeHP ( enemy.value );
+        player1.renderHP ();
     }
+
+    if (enemy.defence !== player.hit) {
+        player2.changeHP ( player.value );
+        player2.renderHP ();
+    }
+    showResult()
 } )
