@@ -1,73 +1,22 @@
 const $arenas = document.querySelector ( '.arenas' );
 const $randomButton = document.querySelector ( '.button' );
-
-function createElement(tag, className) {
-    const $tag = document.createElement ( tag );
-
-    if (className) {
-        $tag.classList.add ( className );
-    }
-
-    return $tag;
+const $formFight = document.querySelector ( '.control' );
+const HIT = {
+    head: 30,
+    body: 25,
+    foot: 20,
 }
-
-
-function createPlayer(character) {
-
-    const $player = createElement ( 'div', 'player' + character.player );
-    const $progressbar = createElement ( 'div', 'progressbar' );
-    const $character = createElement ( 'div', 'character' );
-    const $life = createElement ( 'div', 'life' );
-    const $name = createElement ( 'div', 'name' );
-    const $img = createElement ( 'img' );
-
-    $player.appendChild ( $progressbar );
-    $player.appendChild ( $character );
-    $life.style.width = character.hp + `%`;
-    $name.innerText = character.name;
-    $progressbar.appendChild ( $life );
-    $progressbar.appendChild ( $name );
-    $img.src = character.img;
-    $character.appendChild ( $img );
-
-    return $player;
-}
-
-
-function createReloadButton () {
-    const $reloadDiv = createElement('div', 'reloadWrap');
-    $arenas.appendChild($reloadDiv);
-
-    const $reloadWrap = createElement ( 'button', 'button' );
-    $reloadWrap.innerText = 'Restart';
-
-    $reloadDiv.appendChild ( $reloadWrap );
-
-    $reloadWrap.addEventListener ( 'click', function () {
-        window.location.reload()
-    })
-}
-
-function getRandom(maxNum) {
-    return Math.ceil(Math.random() * maxNum);
-}
-
-
-function startAttack() {
-    return this.name + ' Fight...';
-}
-
-
+const ATTACK = ['head', 'body', 'foot'];
 const player1 = {
     player: 1,
     name: 'SCORPION',
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
     weapon: ['weapon_1'],
-    attack: startAttack,
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP,
+    attack,
+    changeHP,
+    elHP,
+    renderHP,
 }
 const player2 = {
     player: 2,
@@ -75,15 +24,110 @@ const player2 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['weapon_2'],
-    attack: startAttack,
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP,
+    attack,
+    changeHP,
+    elHP,
+    renderHP,
 }
 
-$arenas.appendChild ( createPlayer ( player1 ) );
-$arenas.appendChild ( createPlayer ( player2 ) );
+/**
+ * Создаем элементы html
+ * @param tag
+ * @param className
+ * @param parent
+ * @param child
+ * @returns {*}
+ */
+function createElement(tag, className, parent, child) {
+    const $tag = document.createElement ( tag );
 
+    if (className) {
+        $tag.classList.add ( className );
+    }
+
+    if (child) {
+        switch (Object.keys ( child )[0]) {
+            case 'styleWidth':
+                $tag.style.width = child.styleWidth;
+                break;
+            case 'innerText':
+                $tag.innerText = child.innerText;
+                break;
+            case 'src':
+                $tag.src = child.src;
+                break;
+        }
+    }
+
+    if (parent) {
+        parent.appendChild ( $tag );
+    }
+
+    return $tag;
+}
+
+/**
+ * Создаем html-код игроков
+ * @param character
+ * @returns {*}
+ */
+function createPlayer(character) {
+
+    const $player = createElement ( 'div', 'player' + character.player, $arenas );
+    const $progressbar = createElement ( 'div', 'progressbar', $player );
+    const $character = createElement ( 'div', 'character', $player );
+    createElement ( 'div', 'life', $progressbar, {
+        styleWidth: character.hp + `%`,
+    } );
+    createElement ( 'div', 'name', $progressbar, {
+        innerText: character.name,
+    } );
+    createElement ( 'img', 'img', $character, {
+        src: character.img,
+    } );
+
+    return $player;
+}
+
+/**
+ * Отрисовываем кнопку для перезапуска игры
+ */
+function createReloadButton() {
+    const $reloadDiv = createElement ( 'div', 'reloadWrap', $arenas );
+
+    const $reloadWrap = createElement ( 'button', 'button', $reloadDiv, {
+        innerText: 'Restart',
+    } );
+
+    $reloadWrap.addEventListener ( 'click', function () {
+        window.location.reload ()
+    } )
+}
+
+/**
+ * Создаем случайные числа
+ * @param maxNum
+ * @returns {number}
+ */
+function getRandom(maxNum) {
+    return Math.ceil ( Math.random () * maxNum );
+}
+
+/**
+ * Метод персонажей возвращающий текст
+ * @returns {string}
+ */
+function attack() {
+    return this.name + ' Fight...';
+}
+
+createPlayer ( player1 );
+createPlayer ( player2 );
+
+/**
+ * Пересчитываем кол-во жизней
+ * @param deltaHP
+ */
 function changeHP(deltaHP) {
 
     this.hp -= deltaHP;
@@ -91,49 +135,106 @@ function changeHP(deltaHP) {
     if (this.hp < 0) {
         this.hp = 0;
     }
-
-    this.renderHP();
 }
 
+/**
+ * Находим в html полосы HP
+ **/
 function elHP() {
     return document.querySelector ( '.player' + this.player + ' .life' );
 }
 
+/**
+ * Перерисовываем шкалу жизни
+ */
 function renderHP() {
-    this.elHP().style.width = this.hp + '%';
+    this.elHP ().style.width = this.hp + '%';
 }
 
 
-function playerWins(name) {
-    const $winTitle = createElement ( 'div', 'winTitle' );
-    if (name) {
-        $winTitle.innerText = name + ' Wins';
-    } else {
-        $winTitle.innerText = 'Draw';
-    }
-
-    return $winTitle;
-}
-
-
-$randomButton.addEventListener ( 'click', function () {
-    player1.changeHP(getRandom(20));
-    player2.changeHP(getRandom(20));
-
-    if (player1.hp === 0 || player2.hp === 0) {
-        $randomButton.disabled = true;
-        createReloadButton();
-    }
-
-    if (player1.hp === 0 && player1.hp < player2.hp)
-    {
-        $arenas.appendChild(playerWins(player2.name));
+/**
+ * Определение победителей или ничьей
+ * **/
+function showResult() {
+    if (player1.hp === 0 && player1.hp < player2.hp) {
+        playerWins ( player2.name );
     } else if (player2.hp === 0 && player2.hp < player1.hp) {
-        $arenas.appendChild(playerWins(player1.name));
+        playerWins ( player1.name );
     } else if (player1.hp === 0 && player2.hp === 0) {
-        $arenas.appendChild(playerWins());
+        playerWins ();
+    }
+}
+
+/**
+ * Отображение результатов
+ * **/
+function playerWins(name) {
+    let child;
+
+    if (name) {
+        child = {innerText: name + ' Wins'};
+    } else {
+        child = {innerText: 'Draw'};
     }
 
-})
+    createReloadButton ();
+    createElement ( 'div', 'winTitle', $arenas, child);
+    $randomButton.disabled = true;
+}
+
+/**
+ * Ответные удары противника
+ * **/
+function enemyAttack() {
+    const hit = ATTACK[getRandom ( 3 ) - 1];
+    const defence = ATTACK[getRandom ( 3 ) - 1]
 
 
+    return {
+        value: getRandom ( HIT[hit] ),
+        hit,
+        defence,
+    }
+}
+
+/**
+ * Атакуем противника
+ * @returns {{}}
+ */
+function playerAttack() {
+    const attack = {};
+
+    for (let item of $formFight) {
+        if (item.checked && item.name === 'hit') {
+            attack.value = getRandom ( HIT[item.value] );
+            attack.hit = item.value;
+        }
+
+        if (item.checked && item.name === 'defence') {
+            attack.defence = item.value;
+        }
+        item.checked = false;
+    }
+
+    return attack;
+}
+
+/**
+ * Добавляем слушатель для кнопки Fight
+ */
+$formFight.addEventListener ( 'submit', function (e) {
+    e.preventDefault ();
+    const enemy = enemyAttack ();
+    const player = playerAttack();
+
+    if (player.defence !== enemy.hit) {
+        player1.changeHP ( enemy.value );
+        player1.renderHP ();
+    }
+
+    if (enemy.defence !== player.hit) {
+        player2.changeHP ( player.value );
+        player2.renderHP ();
+    }
+    showResult()
+} )
