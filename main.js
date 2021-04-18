@@ -33,7 +33,9 @@ const player2 = {
     renderHP,
 }
 const logs = {
-    start: 'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
+    start: [
+        'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
+    ],
     end: [
         'Результат удара [playerWins]: [playerLose] - труп',
         '[playerLose] погиб от удара бойца [playerWins]',
@@ -69,9 +71,11 @@ const logs = {
         '[playerKick] не думал о бое, потому расстроенный [playerDefence] отпрыгнул от удара кулаком куда обычно не бьют.',
         '[playerKick] обманулся и жестокий [playerDefence] блокировал удар стопой в солнечное сплетение.'
     ],
-    draw: 'Ничья - это тоже победа!'
+    draw: [
+        'Ничья - это тоже победа!',
+    ]
 };
-const $chat = document.querySelector('.chat');
+const $chat = document.querySelector ( '.chat' );
 
 /**
  * Создаем элементы html
@@ -194,17 +198,19 @@ function renderHP() {
     this.elHP ().style.width = this.hp + '%';
 }
 
-
 /**
  * Определение победителей или ничьей
  * **/
 function showResult() {
     if (player1.hp === 0 && player1.hp < player2.hp) {
         playerWins ( player2.name );
+        generateLog('end', player2, player1);
     } else if (player2.hp === 0 && player2.hp < player1.hp) {
         playerWins ( player1.name );
+        generateLog('end', player1, player2);
     } else if (player1.hp === 0 && player2.hp === 0) {
         playerWins ();
+        generateLog('draw')
     }
 }
 
@@ -274,37 +280,111 @@ $formFight.addEventListener ( 'submit', function (e) {
     if (player.defence !== enemy.hit) {
         player1.changeHP ( enemy.value );
         player1.renderHP ();
-        generateLog('hit', player2, player1);
+        generateLog ( 'hit', player2, player1, enemy.value, player1.hp );
+    } else {
+        generateLog ( 'defence', player2, player1 );
     }
     if (enemy.defence !== player.hit) {
 
         player2.changeHP ( player.value );
         player2.renderHP ();
-        generateLog('hit', player1, player2);
+        generateLog ( 'hit', player1, player2, player.value, player2.hp );
+    } else {
+        generateLog ( 'defence', player1, player2 );
     }
 
     showResult ();
 } )
 
 /**
- * Выводим информацию в лог
- * [time] [text] [-player.hp] [hp/100]
- * @param type
- * @param player1
- * @param player2
+ * Добавляем нули в дату
+ * @param i
+ * @returns {string}
  */
-function generateLog(type, player1, player2) {
-    const text =
-        getTime() + ' ' +
-        logs[type][getRandom(19)-1]
-            .replace('[playerKick]', player1.name)
-            .replace('[playerDefence]', player2.name);
-    console.log ( `#### text:`, text );
-    const el = `<p>${text}</p>`;
-    $chat.insertAdjacentHTML('afterbegin', el);
+function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
 }
 
+/**
+ * Генерируем время для логов
+ * @returns {string}
+ */
 function getTime() {
-    const date = new Date();
-    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+    const d = new Date ();
+    const h = addZero ( d.getHours () );
+    const m = addZero ( d.getMinutes () );
+    const s = addZero ( d.getSeconds () );
+
+    return `${ h }:${ m }:${ s }`;
 }
+
+/**
+ * Возвращаем количество шаблонов в зависимости от типа события
+ * @param type
+ * @returns {string|number}
+ */
+function countTemplate(type) {
+    switch (type) {
+        case 'start':
+            return 1;
+        case 'end':
+            return 3;
+        case 'hit':
+            return 18;
+        case 'defence':
+            return 8;
+        case 'draw':
+            return 1;
+    }
+}
+
+/**
+ * Выбираем случайный шаблон конкретного типа
+ * @param type
+ * @returns {*}
+ */
+function choiceTemplate(type) {
+    return logs[type][getRandom ( countTemplate ( type ) ) - 1];
+}
+
+/**
+ * Выводим информацию в чат в формате [time] [text] *([-player.hp] [hp/100])
+ * "*" - не обязательные атрибуты
+ * @param type
+ * @param playerKick - он же playerWins
+ * @param playerDefence - он же playerLose
+ * @param value
+ * @param hp
+ */
+function generateLog(type, playerKick, playerDefence, value, hp) {
+    /**
+     * набор заменяемых элементов в зависимости от типа:
+     * start: '[time]', '[player1]', '[player2]',
+     * end: '[playerLose]', '[playerWins]',
+     * hit: '[playerDefence]', '[playerKick]',
+     * defence: '[playerKick]',
+     * draw: none.
+     *
+     * @type {string}
+     */
+    const time = getTime ();
+    let text = choiceTemplate ( type )
+        .replace ( '[time]', getTime () )
+        .replace ( '[player1]', player1.name )
+        .replace ( '[player2]', player2.name )
+        .replace ( '[playerLose]', playerDefence.name ) // передаем playerDefence вместо playerLose, чтобы избыточно не увеличивать кол-во реквизитов
+        .replace ( '[playerWins]', playerKick.name ) // передаем playerKick вместо playerWins, чтобы избыточно не увеличивать кол-во реквизитов
+        .replace ( '[playerKick]', playerKick.name )
+        .replace ( '[playerDefence]', playerDefence.name );
+
+    if (value) {
+        text += ` -${ value }HP [${ hp }/100]`;
+    }
+
+    $chat.insertAdjacentHTML ( 'afterbegin', `<p>${ time } - ${ text }</p>` );
+}
+
+generateLog('start', player1, player2);
