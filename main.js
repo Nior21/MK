@@ -322,6 +322,15 @@ function getTime() {
 }
 
 /**
+ * Возвращаем кол-во вариантов шаблона нужного типа
+ * @param type
+ * @returns {number}
+ */
+function getLogsLength (type) {
+    return logs[type].length;
+}
+
+/**
  * Возвращаем количество шаблонов в зависимости от типа события
  * @param type
  * @returns {string|number}
@@ -329,15 +338,15 @@ function getTime() {
 function countTemplate(type) {
     switch (type) {
         case 'start':
-            return 1;
+            return getLogsLength(type);
         case 'end':
-            return 3;
+            return getLogsLength(type);
         case 'hit':
-            return 18;
+            return getLogsLength(type);
         case 'defence':
-            return 8;
+            return getLogsLength(type);
         case 'draw':
-            return 1;
+            return getLogsLength(type);
     }
 }
 
